@@ -27,20 +27,25 @@
 
     *{ box-sizing: border-box; }
     html,body{ height:100%; }
-    body{
-      margin:0;
-      color:var(--ink);
-      background:
-        radial-gradient(900px 520px at 20% -10%, var(--bg2) 0%, rgba(242,215,204,.0) 55%),
-        radial-gradient(900px 520px at 90% 10%, rgba(205,160,182,.35) 0%, rgba(205,160,182,0) 55%),
-        linear-gradient(180deg, var(--bg1) 0%, #fff 40%, var(--bg1) 100%);
-      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding: 18px;
-      padding-bottom: calc(18px + env(safe-area-inset-bottom));
-    }
+body{
+  margin:0;
+  color:var(--ink);
+  background:
+    radial-gradient(900px 520px at 20% -10%, var(--bg2) 0%, rgba(242,215,204,.0) 55%),
+    radial-gradient(900px 520px at 90% 10%, rgba(205,160,182,.35) 0%, rgba(205,160,182,0) 55%),
+    linear-gradient(180deg, var(--bg1) 0%, #fff 40%, var(--bg1) 100%);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+
+  display:flex;
+  justify-content:center;
+  align-items:flex-start; /* ★ center → flex-start */
+
+  padding: 18px;
+  padding-top: calc(18px + env(safe-area-inset-top));   /* ★ 上の切れ防止 */
+  padding-bottom: calc(18px + env(safe-area-inset-bottom));
+
+  overflow-y: auto; /* ★ はみ出してもスクロール可能 */
+}
 
     .wrap{
       width:min(520px, 100%);
@@ -421,3 +426,4 @@
   </script>
 </body>
 </html>
+
