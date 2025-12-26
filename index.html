@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#f3e6dc" />
+  <title>Now Playing: Rin</title>
+
+  <!-- SNS共有時の見え方（任意） -->
+  <meta property="og:title" content="Now Playing: Rin" />
+  <meta property="og:description" content="Tap to play Rin’s theme." />
+  <meta property="og:type" content="website" />
+
+  <style>
+    :root{
+      --bg1:#f7efe9;
+      --bg2:#f2d7cc;
+      --ink:#4c3a2a;
+      --muted:#7a6550;
+      --glass: rgba(255,255,255,.42);
+      --stroke: rgba(255,255,255,.55);
+      --shadow: 0 18px 50px rgba(0,0,0,.16);
+      --radius: 26px;
+      --accent:#cda0b6;
+      --accent2:#b98aa3;
+    }
+
+    *{ box-sizing: border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 520px at 20% -10%, var(--bg2) 0%, rgba(242,215,204,.0) 55%),
+        radial-gradient(900px 520px at 90% 10%, rgba(205,160,182,.35) 0%, rgba(205,160,182,0) 55%),
+        linear-gradient(180deg, var(--bg1) 0%, #fff 40%, var(--bg1) 100%);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      padding-bottom: calc(18px + env(safe-area-inset-bottom));
+    }
+
+    .wrap{
+      width:min(520px, 100%);
+    }
+
+    .header{
+      text-align:center;
+      margin: 4px 0 14px;
+    }
+    .kicker{
+      font-weight: 800;
+      letter-spacing: .14em;
+      font-size: 14px;
+      color: rgba(76,58,42,.72);
+    }
+    .title{
+      margin: 10px 0 4px;
+      font-size: clamp(26px, 5.4vw, 34px);
+      font-weight: 900;
+      letter-spacing: .02em;
+    }
+    .subtitle{
+      margin: 0;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .card{
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .cover{
+      position: relative;
+      aspect-ratio: 16 / 11;
+      background: rgba(205,160,182,.25);
+      overflow:hidden;
+    }
+    .cover img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      filter: saturate(1.02) contrast(1.02);
+    }
+    .badge{
+      position:absolute;
+      left: 12px;
+      top: 12px;
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.62);
+      border: 1px solid rgba(255,255,255,.55);
+      font-weight: 900;
+      letter-spacing: .08em;
+      font-size: 12px;
+    }
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:99px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(205,160,182,.25);
+    }
+
+    .panel{
+      padding: 14px 16px 16px;
+    }
+
+    .trackRow{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .trackInfo{
+      min-width: 0;
+    }
+    .trackName{
+      font-weight: 950;
+      font-size: 18px;
+      line-height: 1.2;
+      margin:0;
+      letter-spacing:.01em;
+    }
+    .artist{
+      margin: 6px 0 0;
+      color: rgba(76,58,42,.72);
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing:.02em;
+    }
+    .chip{
+      flex: none;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(76,58,42,.10);
+      border: 1px solid rgba(76,58,42,.10);
+      font-weight: 900;
+      font-size: 12px;
+      color: rgba(76,58,42,.78);
+      user-select:none;
+    }
+
+    .progressWrap{
+      margin-top: 8px;
+    }
+    .range{
+      -webkit-appearance:none;
+      width:100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(76,58,42,.18);
+      outline: none;
+      touch-action: manipulation;
+    }
+    .range::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: var(--accent);
+      border: 3px solid rgba(255,255,255,.9);
+      box-shadow: 0 8px 20px rgba(0,0,0,.18);
+    }
+    .timeRow{
+      display:flex;
+      justify-content:space-between;
+      margin-top: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      color: rgba(76,58,42,.70);
+      font-weight: 700;
+    }
+
+    .controls{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .btn{
+      border: 0;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:active{ transform: scale(.99); }
+
+    .btnSmall{
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      background: rgba(76,58,42,.12);
+      color: var(--ink);
+      font-size: 22px;
+      display:grid;
+      place-items:center;
+    }
+
+    .btnPlay{
+      width: 78px;
+      height: 78px;
+      border-radius: 26px;
+      background: rgba(76,58,42,.18);
+      color: var(--ink);
+      font-size: 30px;
+      display:grid;
+      place-items:center;
+      box-shadow: 0 14px 26px rgba(0,0,0,.12);
+    }
+
+    .cta{
+      margin-top: 14px;
+      width: 100%;
+      padding: 14px 14px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
+      color: #fff;
+      font-weight: 950;
+      letter-spacing:.08em;
+      font-size: 16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
+    }
+
+    .note{
+      margin: 10px 2px 0;
+      font-size: 12px;
+      color: rgba(76,58,42,.62);
+      line-height: 1.5;
+      text-align:center;
+    }
+
+    .links{
+      display:flex;
+      gap:10px;
+      margin-top: 12px;
+    }
+    .linkBtn{
+      flex:1;
+      padding: 12px 10px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(255,255,255,.55);
+      color: rgba(76,58,42,.82);
+      font-weight: 900;
+      letter-spacing:.03em;
+      font-size: 13px;
+      text-decoration:none;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="header">
+      <div class="kicker">NOW PLAYING</div>
+      <div class="title">Rin</div>
+      <p class="subtitle">Tap to play Rin’s theme</p>
+    </header>
+
+    <section class="card" aria-label="Music Player">
+      <div class="cover">
+        <!-- 画像がないならこの img 行を消してOK -->
+        <img src="cover.jpg" alt="Rin cover art">
+        <div class="badge"><span class="dot"></span><span id="status">READY</span></div>
+      </div>
+
+      <div class="panel">
+        <div class="trackRow">
+          <div class="trackInfo">
+            <p class="trackName" id="trackName">Rin Theme</p>
+            <p class="artist" id="artist">Black Cat • Spring Sunlight</p>
+          </div>
+          <div class="chip" id="mode">MOBILE</div>
+        </div>
+
+        <div class="progressWrap">
+          <input id="seek" class="range" type="range" min="0" max="100" value="0" aria-label="Seek">
+          <div class="timeRow">
+            <span id="cur">0:00</span>
+            <span id="dur">0:00</span>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btnSmall" id="rew" type="button" aria-label="Back 10 seconds">⏪</button>
+          <button class="btn btnPlay" id="play" type="button" aria-label="Play/Pause">▶</button>
+          <button class="btn btnSmall" id="fwd" type="button" aria-label="Forward 10 seconds">⏩</button>
+        </div>
+
+        <button class="btn cta" id="cta" type="button">
+          📱 TAP TO PLAY
+        </button>
+
+        <p class="note">
+          ※ iPhoneは自動再生できないため、最初にボタンを押して再生してね
+        </p>
+
+        <!-- 任意：リンクボタン（あとでInstagram等を追加できる） -->
+        <div class="links">
+          <a class="linkBtn" href="#" onclick="alert('あとでInstagramのURLに差し替えよう！'); return false;">📷 Instagram</a>
+          <a class="linkBtn" href="#" onclick="alert('あとでWebサイトのURLに差し替えよう！'); return false;">🌐 Site</a>
+        </div>
+
+        <audio id="audio" preload="metadata">
+          <source src="rin-theme.mp3" type="audio/mpeg">
+        </audio>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const audio = document.getElementById("audio");
+    const playBtn = document.getElementById("play");
+    const cta = document.getElementById("cta");
+    const rew = document.getElementById("rew");
+    const fwd = document.getElementById("fwd");
+    const seek = document.getElementById("seek");
+    const cur = document.getElementById("cur");
+    const dur = document.getElementById("dur");
+    const status = document.getElementById("status");
+
+    const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+    function fmt(sec){
+      if(!isFinite(sec)) return "0:00";
+      sec = Math.floor(sec);
+      const m = Math.floor(sec/60);
+      const s = String(sec%60).padStart(2,"0");
+      return `${m}:${s}`;
+    }
+
+    function setStatus(text){
+      status.textContent = text;
+    }
+
+    function updateUI(){
+      cur.textContent = fmt(audio.currentTime);
+      dur.textContent = fmt(audio.duration);
+      if(isFinite(audio.duration) && audio.duration > 0){
+        seek.value = String((audio.currentTime / audio.duration) * 100);
+      }else{
+        seek.value = "0";
+      }
+      const isPaused = audio.paused;
+      playBtn.textContent = isPaused ? "▶" : "❚❚";
+      cta.textContent = isPaused ? "📱 TAP TO PLAY" : "❚❚ TAP TO PAUSE";
+      setStatus(isPaused ? "READY" : "PLAYING");
+    }
+
+    async function togglePlay(){
+      try{
+        if(audio.paused){
+          await audio.play();
+        }else{
+          audio.pause();
+        }
+      }catch(e){
+        // iOSなどでユーザー操作が必要な場合の保険（ここに落ちることがある）
+        console.log(e);
+      }
+      updateUI();
+    }
+
+    playBtn.addEventListener("click", togglePlay);
+    cta.addEventListener("click", togglePlay);
+
+    rew.addEventListener("click", () => {
+      audio.currentTime = clamp(audio.currentTime - 10, 0, audio.duration || audio.currentTime);
+      updateUI();
+    });
+
+    fwd.addEventListener("click", () => {
+      audio.currentTime = clamp(audio.currentTime + 10, 0, audio.duration || audio.currentTime + 10);
+      updateUI();
+    });
+
+    // シーク（ドラッグ中は音を止めずに追従）
+    seek.addEventListener("input", () => {
+      if(!isFinite(audio.duration) || audio.duration <= 0) return;
+      const t = (Number(seek.value) / 100) * audio.duration;
+      audio.currentTime = clamp(t, 0, audio.duration);
+      updateUI();
+    });
+
+    audio.addEventListener("loadedmetadata", () => {
+      updateUI();
+    });
+    audio.addEventListener("timeupdate", updateUI);
+    audio.addEventListener("play", updateUI);
+    audio.addEventListener("pause", updateUI);
+    audio.addEventListener("ended", () => {
+      audio.currentTime = 0;
+      audio.pause();
+      updateUI();
+    });
+
+    // 初期表示
+    updateUI();
+  </script>
+</body>
+</html>
